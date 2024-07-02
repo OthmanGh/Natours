@@ -1,6 +1,7 @@
 {
   "name": "natours",
   "version": "1.0.0",
+  "type": "module",
   "description": "practicing node, express & mongoDB",
   "main": "app.js",
   "scripts": {
