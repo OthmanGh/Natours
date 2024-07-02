@@ -1,18 +1,21 @@
-import e from 'express';
+const e = require('express');
+const fs = require('fs');
 
-const app = e();
 const port = 3000;
+const app = e();
 
-app.get('/', (req, res) => {
-  res.status(200).json({
-    message: 'Hello from server side get method',
-    app: 'Natours',
-  });
-});
+const tours = fs.readFileSync(
+  `${__dirname}/dev-data/data/tours-simple.json`,
+  'utf-8'
+);
 
-app.post('/', (req, res) => {
+app.get('/api/v1/tours', (req, res) => {
   res.status(200).json({
-    message: 'Hello from server side post method',
+    status: 'success',
+    result: tours.length(),
+    data: {
+      tours,
+    },
   });
 });
 
