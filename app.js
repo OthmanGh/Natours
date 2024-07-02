@@ -1,19 +1,25 @@
 const fs = require('fs');
 const express = require('express');
+const morgan = require('morgan');
 
 const port = 3000;
 const app = express();
 
-app.use(express.json());
-
 const toursJSONPath = `${__dirname}/dev-data/data/tours-simple.json`;
+const tours = JSON.parse(fs.readFileSync(toursJSONPath, 'utf-8'));
 
-let tours = JSON.parse(fs.readFileSync(toursJSONPath, 'utf-8'));
+app.use(express.json());
+app.use(morgan(`dev`));
+app.use((req, res, next) => {
+  req.requestedTime = new Date().toISOString();
+  next();
+});
 
 const getAllTours = (req, res) => {
   res.status(200).json({
     status: 'success',
     result: tours.length,
+    requestedAt: req.requestedTime,
     data: {
       tours,
     },
