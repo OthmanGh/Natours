@@ -7,6 +7,8 @@ const userRouter = require('./routes/user.routes');
 
 app.use(e.json());
 app.use(morgan(`dev`));
+app.use(e.static(`${__dirname}/public`));
+
 app.use((req, res, next) => {
   req.requestedTime = new Date().toISOString();
   next();
