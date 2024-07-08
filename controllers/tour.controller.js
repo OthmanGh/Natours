@@ -36,25 +36,22 @@ exports.getTour = async (req, res) => {
   }
 };
 
-exports.createTour = (req, res) => {
-  // const newId = tours[tours.length - 1].id + 1;
-  // const newTour = Object.assign({ id: newId }, req.body);
-  // tours.push(newTour);
-  // fs.writeFile(toursJSONPath, JSON.stringify(tours), 'utf-8', (err) => {
-  //   if (err) {
-  //     res.status(500).json({
-  //       status: 'error',
-  //       message: 'Failed to write to tours file',
-  //     });
-  //   } else {
-  //     res.status(201).json({
-  //       status: 'success',
-  //       data: {
-  //         tour: newTour,
-  //       },
-  //     });
-  //   }
-  // });
+exports.createTour = async (req, res) => {
+  try {
+    const newTour = await Tour.create(req.body);
+
+    res.status(201).json({
+      status: 'success',
+      data: {
+        newTour,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
 
 exports.updateTour = (req, res) => {
