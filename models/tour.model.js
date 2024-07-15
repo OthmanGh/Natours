@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -8,6 +9,8 @@ const tourSchema = new mongoose.Schema(
       unique: true,
       trim: true,
     },
+
+    slug: String,
 
     duration: {
       type: Number,
@@ -86,6 +89,23 @@ const tourSchema = new mongoose.Schema(
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
+
+// We can have middleware runing before & after a certain event and in case of docuemnt middleware it's actually the save event.
+
+// Document middleware: runs before .save() and .create() not on .insertMany(), .findById()...etc
+tourSchema.pre('save', function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+// tourSchema.pre('save', function (next) {
+//   console.log('Will Save document...');
+//   next();
+// });
+
+// tourSchema.post('save', function (doc, next) {
+//   console.log(doc);
+// });
 
 const Tour = new mongoose.model('Tour', tourSchema);
 
