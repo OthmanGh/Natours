@@ -4,6 +4,8 @@ const morgan = require('morgan');
 const app = e();
 const tourRouter = require('./routes/tour.routes');
 const userRouter = require('./routes/user.routes');
+const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/error.controller');
 
 app.use(e.json());
 if (process.env.NODE_ENV === 'development') app.use(morgan(`dev`));
@@ -18,26 +20,9 @@ app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
 app.all('*', (req, res, next) => {
-  // res.status(404).json({
-  //   status: 'fail',
-  //   message: `Can't find ${req.originalUrl} on server`,
-  // });
-
-  const error = new Error(`Can't find ${req.originalUrl} on server`);
-  error.status = 'fail';
-  error.statusCode = 404;
-
-  next(error);
+  next(new AppError(`Can't find ${req.originalUrl} on server`, 404));
 });
 
-app.use((error, req, res, next) => {
-  error.statusCode = error.statusCode || 500;
-  error.status = error.status || 'error';
-
-  res.status(error.statusCode).json({
-    status: error.status,
-    message: error.message,
-  });
-});
+app.use(globalErrorHandler);
 
 module.exports = app;
