@@ -15,8 +15,10 @@ const sendErrorDev = (err, res) => {
 };
 
 const handleDuplicateFieldsDB = (err) => {
-  const message = `Duplicate field value: x. Use another value`;
-  return new AppError(message, 400); // Added return statement
+  const { errmsg } = err.errorResponse;
+  const value = errmsg.match(/(["'])(\\?.)*?\1/)[0];
+  const message = `Duplicate field value: ${value} - use another value`;
+  return new AppError(message, 400);
 };
 
 const sendErrorProd = (err, res) => {
