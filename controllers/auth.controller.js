@@ -49,6 +49,16 @@ exports.login = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      next(new AppError("You don't have access to perfrom this action", 403));
+    }
+
+    next();
+  };
+};
+
 exports.protect = async (req, res, next) => {
   // 1) Getting token and check if it's there:
   let token;
