@@ -101,3 +101,19 @@ exports.protect = async (req, res, next) => {
   req.user = currentUser;
   next();
 };
+
+exports.forgotPassword = catchAsync(async (req, res) => {
+  // Get user:
+  const user = await User.findOne({ email: req.body.email });
+
+  if (!user) {
+    return next(new AppError('No such user with that email', 404));
+  }
+
+  // Generate random resetToken:
+  const resetToken = user.createPasswordResetToken();
+
+  await user.save({ validateBeforeSave: false });
+
+  // Send it to user's email:
+});
